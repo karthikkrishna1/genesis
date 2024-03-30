@@ -25,7 +25,7 @@ export default function Login() {
     };
 
     return (
-        <div>
+        <div className="loginform">
             <h1 class="title">
                 Welcome Back!
             </h1>
