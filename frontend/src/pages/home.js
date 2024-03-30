@@ -6,7 +6,7 @@ import Signup from "./signup"
 
 
 const Home = () => {
-    const [ hasAccount, setHasAccount ] = useState(false);
+    const [ hasAccount, setHasAccount ] = useState(true);
     const [loggedIn, setLoggedIn] = useState(false);
     const handleSignin = () => {}
     
