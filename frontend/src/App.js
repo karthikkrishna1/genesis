@@ -1,7 +1,10 @@
+import { React, useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, Switch } from "react-router-dom";
 import axios from "axios";
 import {format} from "date-fns";
-import { useState, useEffect } from "react";
 import './App.css';
+import Home from "./pages/home";
+import Login from "./pages/login";
 
 const baseUrl = "http://localhost:5000";
 
@@ -38,17 +41,12 @@ function App() {
 
   return (
     <div className="App">
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="description">Description</label>
-          <input
-            onChange={handleChange}
-            type="text"
-            name="description"
-            id="description"
-            value={description}
-          />
-          <button type="submit">Submit</button>
-        </form>
+        <Router>
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            {/* <Route exact path="/call" element={<Call />} /> */}
+          </Routes>
+        </Router>
     </div>
   );
 }

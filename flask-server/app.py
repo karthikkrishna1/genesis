@@ -7,7 +7,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Nc1143618@localhost/email-scanner'
 db = SQLAlchemy(app)
-CORS(app)
+
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
