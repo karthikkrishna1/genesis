@@ -49,6 +49,4 @@ def handle_peer_nego_done(data):
     emit('peer:nego:final', {'from': request.sid, 'ans': ans}, room=to)
 
 if __name__ == '__main__':
-    # with app.app_context():
-        # db.create_all()
     app.run(debug=True)
