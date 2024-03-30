@@ -33,7 +33,7 @@ const LobbyScreen = () => {
   }, [socket, handleJoinRoom]);
 
   return (
-    <div>
+    <div className="lobby">
       <h1>Lobby</h1>
       <form onSubmit={handleSubmitForm}>
         <label htmlFor="email">Email ID</label>
