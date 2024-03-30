@@ -21,9 +21,10 @@ function App() {
     <div className="App">
       <Routes>
         <Route exact path="/" element={<Home />} />
-        {/* <Route exact path="/call" element={<Call />} /> */}
-        <Route path="/" element={<LobbyScreen />} />
-        <Route path="/room/:roomId" element={<RoomPage />} />
+        <Route exact path="/call">
+          <Route path="/call" element={<LobbyScreen />} />
+          <Route path="/call/room/:roomId" element={<RoomPage />} />
+        </Route>
       </Routes>
     </div>
   );
