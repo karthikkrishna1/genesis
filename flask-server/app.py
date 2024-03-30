@@ -2,10 +2,12 @@ import os
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Nc1143618@localhost/email-scanner'
 db = SQLAlchemy(app)
+CORS(app)
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,20 +44,32 @@ def create_event():
 @app.route('/events', methods=['GET'])
 def get_events():
     events = Event.query.order_by(Event.id.asc()).all()
-    return [format_event(event) for event in events]
-
-def get_event(event_id):
-    event = Event.query.get(event_id)
-    return format_event(event)
+    events_list = [format_event(event) for event in events]
+    return {'events': events_list}
 
 
-@app.route('/events', method=['PUT'])
-def update_event(event_id):
-    event = Event.query.get(event_id)
+# Get event by id
+@app.route('/events/<id>', methods=['GET'])
+def get_event(id):
+    event = Event.query.filter_by(id=id).one()
+    return {'event': format_event(event)}
+
+# Update event by id
+@app.route('/events/<id>', methods=['PUT'])
+def update_event(id):
+    event = Event.query.filter_by(id=id)
     description = request.json['description']
-    event.description = description
+    event.update(dict(description=description, date_entered=datetime.now()))
     db.session.commit()
-    return format_event(event)
+    return {'event': format_event(event.one())}
+
+# Delete event by id
+@app.route('/events/<id>', methods=['DELETE'])
+def delete_event(id):
+    event = Event.query.filter_by(id=id).one()
+    db.session.delete(event)
+    db.session.commit()
+    return f'Event (id: {id}) was successfully deleted'
 
 if __name__ == '__main__':
     with app.app_context():
