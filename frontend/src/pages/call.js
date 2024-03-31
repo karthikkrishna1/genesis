@@ -55,6 +55,7 @@ function Call() {
       connectionRef.current = null;
       userVideo.current = null;
       setCallEnded((state) => true);
+      setAlerts((state) => []);
     });
     return () => {
       // Cleanup interval on component unmount
@@ -178,6 +179,7 @@ function Call() {
   const leaveCall = () => {
     setCallEnded(true);
     socket.emit("disconnected");
+    setAlerts((state) => []);
     connectionRef.current.destroy();
   };
 
