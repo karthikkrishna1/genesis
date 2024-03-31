@@ -4,6 +4,8 @@ import vertexai
 # TODO(developer): Vertex AI SDK - uncomment below & run
 import bigframes.dataframe
 import vertexai
+from vertexai import generative_models
+
 from vertexai.generative_models import GenerativeModel, Part
 import time
 import pandas
@@ -32,7 +34,18 @@ def generate_text(model,  path:str) -> str:
         
     return response.text
 
-
+def generate_video_text(model,  path:str) -> str:
+  
+    response = model.generate_content(
+       [
+        "What is in the video? ",
+        generative_models.Part.from_uri("gs://cloud-samples-data/video/animals.mp4", mime_type="video/mp4"),
+        ], stream=True
+    )
+    for chunk in response :
+        print(chunk.text)
+        
+    return chunk.text
 
 model = init_vertex()
 start_time = time.time()
@@ -41,6 +54,10 @@ te = generate_text(model, "gs://cloud-samples-data/ai-platform/flowers/daisy/105
 # print(text)
 end_time = time.time()
 duration = end_time - start_time
+
+
+te = generate_video_text(model, "gs://cloud-samples-data/ai-platform/flowers/daisy/10559679065_50d2b16f6d.jpg" )
+# print(text)
 # start_time = time.time()
 # text = generate_text(model, "gs://cloud-samples-data/ai-platform/flowers/daisy/10559679065_50d2b16f6d.jpg" )
 
