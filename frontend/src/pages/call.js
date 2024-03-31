@@ -9,12 +9,14 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import Peer from "simple-peer";
 import io from "socket.io-client";
 import axios from "axios";
+import Alert from "./alert";
 
 const socket = io.connect("http://localhost:5000");
 
 function Call() {
   const intervalRef = useRef();
   const [me, setMe] = useState("");
+  const [alerts, setAlerts] = useState([]);
   const [stream, setStream] = useState();
   const [receivingCall, setReceivingCall] = useState(false);
   const [caller, setCaller] = useState("");
@@ -98,6 +100,7 @@ function Call() {
               .post("http://localhost:5000/api/model", url)
               .then((response) => {
                 console.log(response.data);
+                setAlerts((state) => [...state, response.data]);
               })
               .catch((error) => {
                 console.log(error);
@@ -179,84 +182,87 @@ function Call() {
   };
 
   return (
-    <div className="video-call-container">
-      {receivingCall && !callAccepted && (
-        <div className="incoming-call">
-          <h1>{name} is calling...</h1>
-          <Button variant="contained" color="primary" onClick={answerCall}>
-            Answer
-          </Button>
-        </div>
-      )}
-      <div className="main-video-area">
-        <div className="main-video">
-          {callAccepted && !callEnded && (
-            <video
-              playsInline
-              ref={userVideo}
-              autoPlay
-              className="full-video"
-            />
-          )}
-          {stream && (
-            <video
-              playsInline
-              muted
-              ref={myVideo}
-              autoPlay
-              className="user-video"
-            />
-          )}
-        </div>
-        <div className="controls">
-          <TextField
-            id="filled-basic"
-            label="Name"
-            variant="filled"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="text-field"
-          />
-          <CopyToClipboard text={me}>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AssignmentIcon />}
-              className="copy-id-button"
-            >
-              Copy ID
+    <>
+      <Alert alerts={alerts} />
+      <div className="video-call-container">
+        {receivingCall && !callAccepted && (
+          <div className="incoming-call">
+            <h1>{name} is calling...</h1>
+            <Button variant="contained" color="primary" onClick={answerCall}>
+              Answer
             </Button>
-          </CopyToClipboard>
-          <TextField
-            id="filled-basic"
-            label="ID to call"
-            variant="filled"
-            value={idToCall}
-            onChange={(e) => setIdToCall(e.target.value)}
-            className="text-field"
-          />
-          {callAccepted && !callEnded ? (
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={leaveCall}
-              className="end-call"
-            >
-              End Call
-            </Button>
-          ) : (
-            <IconButton
-              color="primary"
-              aria-label="call"
-              onClick={() => callUser(idToCall)}
-              className="call-button"
-            >
-              <PhoneIcon />
-            </IconButton>
-          )}
+          </div>
+        )}
+        <div className="main-video-area">
+          <div className="main-video">
+            {callAccepted && !callEnded && (
+              <video
+                playsInline
+                ref={userVideo}
+                autoPlay
+                className="full-video"
+              />
+            )}
+            {stream && (
+              <video
+                playsInline
+                muted
+                ref={myVideo}
+                autoPlay
+                className="user-video"
+              />
+            )}
+          </div>
+          <div className="controls">
+            <TextField
+              id="filled-basic"
+              label="Name"
+              variant="filled"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="text-field"
+            />
+            <CopyToClipboard text={me}>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AssignmentIcon />}
+                className="copy-id-button"
+              >
+                Copy ID
+              </Button>
+            </CopyToClipboard>
+            <TextField
+              id="filled-basic"
+              label="ID to call"
+              variant="filled"
+              value={idToCall}
+              onChange={(e) => setIdToCall(e.target.value)}
+              className="text-field"
+            />
+            {callAccepted && !callEnded ? (
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={leaveCall}
+                className="end-call"
+              >
+                End Call
+              </Button>
+            ) : (
+              <IconButton
+                color="primary"
+                aria-label="call"
+                onClick={() => callUser(idToCall)}
+                className="call-button"
+              >
+                <PhoneIcon />
+              </IconButton>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
