@@ -10,6 +10,7 @@ import io from "socket.io-client";
 
 const socket = io.connect("http://localhost:5000");
 function Call() {
+  const intervalRef = useRef();
   const [me, setMe] = useState("");
   const [stream, setStream] = useState();
   const [receivingCall, setReceivingCall] = useState(false);
@@ -20,7 +21,7 @@ function Call() {
   const [callEnded, setCallEnded] = useState(false);
   const [name, setName] = useState("");
   const myVideo = useRef();
-  const userVideo = useRef(null);
+  const userVideo = useRef();
   const connectionRef = useRef();
 
   useEffect(() => {
@@ -42,7 +43,35 @@ function Call() {
       setName(data.name);
       setCallerSignal(data.signal);
     });
+    intervalRef.current = setInterval(captureAndSaveImage, 1000);
+    return () => {
+      // Cleanup interval on component unmount
+      clearInterval(intervalRef.current);
+    };
   }, []);
+
+  const captureAndSaveImage = () => {
+    console.log("trial");
+    console.log();
+    if (userVideo.current) {
+      console.log("hello");
+      const track = userVideo.current.srcObject.getVideoTracks()[0];
+      console.log(track);
+      const imageCapture = new ImageCapture(track);
+      console.log(imageCapture);
+      imageCapture.grabFrame().then((bitmap) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
+        let imageURL = canvas
+          .toDataURL("image/png")
+          .replace(/^data:image\/(png|jpg);base64,/, "");
+        console.log(imageURL);
+      });
+    }
+  };
 
   const callUser = (id) => {
     const peer = new Peer({
@@ -120,6 +149,7 @@ function Call() {
           </div>
         </div>
         <div className="myId">
+          <h1 id="userId">{me}</h1>
           <TextField
             id="filled-basic"
             label="Name"
