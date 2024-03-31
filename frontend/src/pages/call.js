@@ -96,13 +96,13 @@ function Call() {
   return (
     <div style={{ padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', height: '100vh', backgroundColor: '#1c1c1e' }}>
       <h1 style={{ color: "#fff" }}>Zoomish</h1>
-      <div className="video-container" style={{ position: 'relative', flex: 1, alignSelf: 'stretch' }}>
+      <div className="video-container" style={{ position: 'relative', width: '100%', height: '80vh', maxWidth: '80vw', margin: 'auto' }}>
         {callAccepted && !callEnded ? (
           <video
             playsInline
             ref={userVideo}
             autoPlay
-            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+            style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '80vh', objectFit: 'contain', borderRadius: '8px' }}
           />
         ) : null}
 
@@ -116,58 +116,7 @@ function Call() {
           />
         )}
       </div>
-      <div className="myId" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
-        <TextField
-          id="filled-basic"
-          label="Name"
-          variant="filled"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{ margin: '10px', backgroundColor: 'white', borderRadius: '5px' }}
-        />
-        <CopyToClipboard text={me}>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AssignmentIcon />}
-            style={{ margin: '10px' }}
-          >
-            Copy ID
-          </Button>
-        </CopyToClipboard>
-        <TextField
-          id="filled-basic"
-          label="ID to call"
-          variant="filled"
-          value={idToCall}
-          onChange={(e) => setIdToCall(e.target.value)}
-          style={{ margin: '10px', backgroundColor: 'white', borderRadius: '5px' }}
-        />
-        <div className="call-button">
-          {callAccepted && !callEnded ? (
-            <Button variant="contained" color="secondary" onClick={leaveCall} style={{ margin: '10px' }}>
-              End Call
-            </Button>
-          ) : (
-            <IconButton
-              color="primary"
-              aria-label="call"
-              onClick={() => callUser(idToCall)}
-              style={{ margin: '10px' }}
-            >
-              <PhoneIcon />
-            </IconButton>
-          )}
-        </div>
-      </div>
-      {receivingCall && !callAccepted ? (
-        <div className="caller" style={{ textAlign: 'center' }}>
-          <h1 style={{ color: "#fff" }}>{name} is calling...</h1>
-          <Button variant="contained" color="primary" onClick={answerCall}>
-            Answer
-          </Button>
-        </div>
-      ) : null}
+      {/* Rest of your component */}
     </div>
   );
 }
