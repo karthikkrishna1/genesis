@@ -1,5 +1,6 @@
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import PhoneDisabledIcon from "@mui/icons-material/PhoneDisabled";
 import TextField from "@mui/material/TextField";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -123,62 +124,75 @@ function Call() {
   };
 
   return (
-    <>
-      <h1 style={{ textAlign: "center", color: "#fff" }}>Zoomish</h1>
-      <div className="container">
-        <div className="video-container">
-          <div className="video">
-            {stream && (
-              <video
-                playsInline
-                muted
-                ref={myVideo}
-                autoPlay
-                style={{ width: "300px" }}
-              />
-            )}
+    <div className="video-call-container">
+      <div className="main-video">
+        {callAccepted && !callEnded && (
+          <video playsInline ref={userVideo} autoPlay className="full-video" />
+        )}
+        {stream && (
+          <div className="user-video">
+            <video playsInline muted ref={myVideo} autoPlay className="small-video" />
           </div>
-          <div className="video">
-            {callAccepted && !callEnded ? (
-              <video
-                playsInline
-                ref={userVideo}
-                autoPlay
-                style={{ width: "300px" }}
-              />
-            ) : null}
-          </div>
-        </div>
-        <div className="myId">
-          <h1 id="userId">{me}</h1>
-          <TextField
-            id="filled-basic"
-            label="Name"
-            variant="filled"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            style={{ marginBottom: "20px" }}
-          />
-          <CopyToClipboard text={me} style={{ marginBottom: "2rem" }}>
+        )}
+        {callAccepted && !callEnded && (
+          <Button className="end-call-button" onClick={leaveCall}>
+            <PhoneDisabledIcon />
+          </Button>
+        )}
+      </div>
+      <div className="myId">
+        <TextField
+          id="filled-basic"
+          label="Name"
+          variant="filled"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="text-field"
+        />
+        <CopyToClipboard text={me}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AssignmentIcon />}
+            className="copy-id-button"
+          >
+            Copy ID
+          </Button>
+        </CopyToClipboard>
+        <TextField
+          id="filled-basic"
+          label="ID to call"
+          variant="filled"
+          value={idToCall}
+          onChange={(e) => setIdToCall(e.target.value)}
+          className="text-field"
+        />
+        <div className="call-button">
+          {callAccepted && !callEnded ? (
+            <Button variant="contained" color="secondary" onClick={leaveCall} className="end-call">
+              End Call
+            </Button>
+          ) : (
             <Button
               variant="contained"
               color="primary"
-              startIcon={<AssignmentIcon fontSize="large" />}
+              onClick={() => callUser(idToCall)}
+              startIcon={<PhoneIcon />}
+              className="start-call"
             >
-              Copy ID
+              Call
             </Button>
-          </CopyToClipboard>
-
-          <TextField
-            id="filled-basic"
-            label="ID to call"
-            variant="filled"
-            value={idToCall}
-            onChange={(e) => setIdToCall(e.target.value)}
-          />
-        )}
+          )}
+        </div>
       </div>
-      {/* Rest of your component */}
+      {receivingCall && !callAccepted ? (
+        <div className="incoming-call">
+          <h1>{caller} is calling...</h1>
+          <Button variant="contained" color="primary" onClick={answerCall} className="answer-call">
+            Answer
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }
