@@ -84,6 +84,10 @@ def handle_answer_call(data):
     signal = data["signal"]
     emit("callAccepted", signal, room=to_user)
 
+@socketio.on("disconnected")
+def handle_disconnected():
+    emit("disconnected", broadcast = True)
+
 
 @app.route('/api/upload', methods=['POST'])
 # @cross_origin(origin='localhost', headers=['Content- Type','Authorization'])

@@ -48,6 +48,12 @@ function Call() {
       setCallerSignal(data.signal);
     });
     intervalRef.current = setInterval(captureAndSaveImage, 1000);
+
+    socket.on("disconnected", () => {
+      connectionRef.current = null;
+      userVideo.current = null;
+      setCallEnded((state) => true);
+    });
     return () => {
       // Cleanup interval on component unmount
       clearInterval(intervalRef.current);
@@ -72,25 +78,34 @@ function Call() {
         let imageURL = canvas
           .toDataURL("image/png")
           .replace(/^data:image\/(png|jpg);base64,/, "");
-        
+
         // Send the image to the server
         const imagedata = {
-          body: imageURL
+          body: imageURL,
         };
 
-        axios.post('http://localhost:5000/api/upload', imagedata).then((response) => {
-          console.log(response.data);
-          const url = {
-            body: response.data.replace('https://storage.googleapis.com', 'gs:/')
-          }
-          axios.post('http://localhost:5000/api/model', url). then((response) => {
+        axios
+          .post("http://localhost:5000/api/upload", imagedata)
+          .then((response) => {
             console.log(response.data);
-          }).catch((error) => {
-            console.log(error)
+            const url = {
+              body: response.data.replace(
+                "https://storage.googleapis.com",
+                "gs:/"
+              ),
+            };
+            axios
+              .post("http://localhost:5000/api/model", url)
+              .then((response) => {
+                console.log(response.data);
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           })
-        }).catch((error) => {
-          console.log(error);
-        })
+          .catch((error) => {
+            console.log(error);
+          });
         // fetch('http://localhost:5000/api/upload', imagedata).then((response) => {
         //     console.log(response.data);
         // }).catch((error) => {
@@ -102,11 +117,14 @@ function Call() {
         // }).catch((error) => {
         //   console.log(error);
         // });
-        axios.get('http://localhost:5000/api/model').then((response) => {
-          console.log(response.data);
-        }).catch((error) => {
-          console.log(error);
-        })
+        axios
+          .get("http://localhost:5000/api/model")
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       });
     }
   };
@@ -156,6 +174,7 @@ function Call() {
 
   const leaveCall = () => {
     setCallEnded(true);
+    socket.emit("disconnected");
     connectionRef.current.destroy();
   };
 
@@ -172,55 +191,71 @@ function Call() {
       <div className="main-video-area">
         <div className="main-video">
           {callAccepted && !callEnded && (
-            <video playsInline ref={userVideo} autoPlay className="full-video" />
+            <video
+              playsInline
+              ref={userVideo}
+              autoPlay
+              className="full-video"
+            />
           )}
           {stream && (
-            <video playsInline muted ref={myVideo} autoPlay className="user-video" />
+            <video
+              playsInline
+              muted
+              ref={myVideo}
+              autoPlay
+              className="user-video"
+            />
           )}
         </div>
-      <div className="controls">
-        <TextField
-          id="filled-basic"
-          label="Name"
-          variant="filled"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="text-field"
-        />
-        <CopyToClipboard text={me}>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AssignmentIcon />}
-            className="copy-id-button"
-          >
-            Copy ID
-          </Button>
-        </CopyToClipboard>
-        <TextField
-          id="filled-basic"
-          label="ID to call"
-          variant="filled"
-          value={idToCall}
-          onChange={(e) => setIdToCall(e.target.value)}
-          className="text-field"
-        />
-        {callAccepted && !callEnded ? (
-          <Button variant="contained" color="secondary" onClick={leaveCall} className="end-call">
-            End Call
-          </Button>
-        ) : (
-          <IconButton
-            color="primary"
-            aria-label="call"
-            onClick={() => callUser(idToCall)}
-            className="call-button"
-          >
-            <PhoneIcon />
-          </IconButton>
-        )}
+        <div className="controls">
+          <TextField
+            id="filled-basic"
+            label="Name"
+            variant="filled"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="text-field"
+          />
+          <CopyToClipboard text={me}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AssignmentIcon />}
+              className="copy-id-button"
+            >
+              Copy ID
+            </Button>
+          </CopyToClipboard>
+          <TextField
+            id="filled-basic"
+            label="ID to call"
+            variant="filled"
+            value={idToCall}
+            onChange={(e) => setIdToCall(e.target.value)}
+            className="text-field"
+          />
+          {callAccepted && !callEnded ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={leaveCall}
+              className="end-call"
+            >
+              End Call
+            </Button>
+          ) : (
+            <IconButton
+              color="primary"
+              aria-label="call"
+              onClick={() => callUser(idToCall)}
+              className="call-button"
+            >
+              <PhoneIcon />
+            </IconButton>
+          )}
+        </div>
       </div>
-    </div>
     </div>
   );
 }
