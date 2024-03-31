@@ -195,33 +195,48 @@ button:hover .arrow:before {
 
 
 .video-call-container {
+  position: relative; /* Needed for absolute positioning of children */
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   background: linear-gradient(116.52deg, #269272 12.58%, #174A4E 97.55%);
-  padding: 20px;
-  box-sizing: border-box;
+}
+
+.main-video-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%; /* Use full container width */
+  position: relative;
 }
 
 .main-video {
-  position: relative;
-  width: 75%; /* Adjust this value as needed */
-  aspect-ratio: 16 / 9;
-  background-color: #fff;
+  width: 75%; /* Adjust width as needed */
+  aspect-ratio: 16 / 9; /* Maintain video aspect ratio */
+  background-color: #fff; /* Default white background */
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-height: 80vh;
 }
 
 .user-video {
+  /* Adjust if the video is absolutely positioned or adjust the size as needed */
   position: absolute;
   bottom: 20px;
   right: 20px;
-  width: 150px;
-  height: 84px; /* Adjust height according to the aspect ratio */
   border-radius: 8px;
-  overflow: hidden;
+  width: 150px;
+  height: 84px; /* Based on aspect ratio */
+}
+
+.controls {
+  width: 100%;
+  max-width: 75%; /* Same as the video width for alignment */
+  margin-top: 20px; /* Space between video and controls */
 }
 
 video {
@@ -258,7 +273,41 @@ video {
   margin: 10px;
 }
 
+
+.video-area {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start; /* Align to top to prevent stretching to video height */
+}
+
 .incoming-call {
-  text-align: center;
-  color: white;
+  position: absolute;
+  right: 20px; /* Position to the right side */
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%); /* Offset by half its own height for centering */
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  min-width: 200px;
+  z-index: 2; /* Ensure it's above other elements if needed */
+}
+
+.waiting-for-call {
+  background-color: #fff; /* Keep it white before call connects */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Optional: Add a message or icon indicating waiting for call */
+  /* You can use ::before or ::after with content for a message/icon */
+}
+
+.my-video {
+  position: absolute;
+  bottom: 20px; /* Position at the bottom right of the main video area */
+  right: 20px;
+  width: 150px; /* Small video size */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 8px;
+  z-index: 3; /* Ensures it's on top of the main video */
 }

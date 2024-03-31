@@ -25,6 +25,7 @@ function Call() {
   const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
+  const hasVideo = callAccepted && !callEnded && userVideo?.current?.srcObject;
 
   useEffect(() => {
     navigator.mediaDevices
@@ -125,22 +126,24 @@ function Call() {
 
   return (
     <div className="video-call-container">
-      <div className="main-video">
-        {callAccepted && !callEnded && (
-          <video playsInline ref={userVideo} autoPlay className="full-video" />
-        )}
-        {stream && (
-          <div className="user-video">
-            <video playsInline muted ref={myVideo} autoPlay className="small-video" />
-          </div>
-        )}
-        {callAccepted && !callEnded && (
-          <Button className="end-call-button" onClick={leaveCall}>
-            <PhoneDisabledIcon />
+      {receivingCall && !callAccepted && (
+        <div className="incoming-call">
+          <h1>{name} is calling...</h1>
+          <Button variant="contained" color="primary" onClick={answerCall}>
+            Answer
           </Button>
-        )}
-      </div>
-      <div className="myId">
+        </div>
+      )}
+      <div className="main-video-area">
+        <div className="main-video">
+          {callAccepted && !callEnded && (
+            <video playsInline ref={userVideo} autoPlay className="full-video" />
+          )}
+          {stream && (
+            <video playsInline muted ref={myVideo} autoPlay className="user-video" />
+          )}
+        </div>
+      <div className="controls">
         <TextField
           id="filled-basic"
           label="Name"
@@ -167,32 +170,22 @@ function Call() {
           onChange={(e) => setIdToCall(e.target.value)}
           className="text-field"
         />
-        <div className="call-button">
-          {callAccepted && !callEnded ? (
-            <Button variant="contained" color="secondary" onClick={leaveCall} className="end-call">
-              End Call
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => callUser(idToCall)}
-              startIcon={<PhoneIcon />}
-              className="start-call"
-            >
-              Call
-            </Button>
-          )}
-        </div>
-      </div>
-      {receivingCall && !callAccepted ? (
-        <div className="incoming-call">
-          <h1>{caller} is calling...</h1>
-          <Button variant="contained" color="primary" onClick={answerCall} className="answer-call">
-            Answer
+        {callAccepted && !callEnded ? (
+          <Button variant="contained" color="secondary" onClick={leaveCall} className="end-call">
+            End Call
           </Button>
-        </div>
-      ) : null}
+        ) : (
+          <IconButton
+            color="primary"
+            aria-label="call"
+            onClick={() => callUser(idToCall)}
+            className="call-button"
+          >
+            <PhoneIcon />
+          </IconButton>
+        )}
+      </div>
+    </div>
     </div>
   );
 }
