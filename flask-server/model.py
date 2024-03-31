@@ -45,7 +45,7 @@ def generate_text(model,  path:str) -> str:
 
 
 
-# model = init_vertex()
+model = init_vertex()
 # start_time = time.time()
 
 # te = generate_text(model, "gs://cloud-samples-data/ai-platform/flowers/daisy/10559679065_50d2b16f6d.jpg" )

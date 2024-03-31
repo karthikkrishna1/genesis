@@ -39,7 +39,7 @@ def generate_text(model,  path:str) -> str:
     response = model.generate_content(
         [
             # Add an example image
-            " tell me if last image is a real or AI-generated image based on what the next three images are.",
+            " tell me if last image is a real or AI-generated image based on what the next three images are. reply with yes or no",
             # Part.from_uri('./fake-agetriarxi.mp4', mime_type="video/mp4"),
             Part.from_uri('gs://animated-scope-418820.appspot.com/Screenshot_2024-03-31_at_4.05.18_AM.png', mime_type='image/png'),
             "This is a deepfake image, remember the qualities and synthetic artifacts",
@@ -49,7 +49,7 @@ def generate_text(model,  path:str) -> str:
             "This is a deepfake image, remember the qualities and synthetic artifacts",
             Part.from_uri(path, mime_type='image/png'),
             # "Tell me if synthesis artifacts are in the face. Must return with 1) yes or no only; 2) if yes, explain where the artifacts exist by answering in [region, artifacts] form."
-            # "I want you to work as an image forensic expert for AI-generated faces. Check if the second image has the artifact attribute listed in the following list and ONLY return the attribute number in this image. The artifact list is [1-asymmetric eye iris; 2-irregular glasses shape or reflection; 3-irregular teeth shape ore texture; 4-irregular ears or earrings; 5-strange hair texture; 6-inconsistent skin texture; 7-inconsistent lighting and shading; 8-strange background; 9-weird hands; 10-unnatural edges]."
+            # "I want you to work as an image forensic expert for AI-generated faces. Check if the second image has the artifact attribute listed in the following list and ONLY return the attribute number in this image. The artifact list is [1-asymmetric eye iris; 2-irregular glasses shape or reflection; 3-irregular teeth shape ore texture; 4-irregular earsgt or earrings; 5-strange hair texture; 6-inconsistent skin texture; 7-inconsistent lighting and shading; 8-strange background; 9-weird hands; 10-unnatural edges]."
         ]
     )
     print(response)
