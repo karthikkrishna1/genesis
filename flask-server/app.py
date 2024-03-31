@@ -1,6 +1,6 @@
 import base64
 import os
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_cors import CORS, cross_origin
 from google.cloud import storage
@@ -55,15 +55,18 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 #     ans = data['ans']
 #     emit('peer:nego:final', {'from': request.sid, 'ans': ans}, room=to)
 
+
 @socketio.on("connect")
 def handle_connect():
     print("Socket Connected", request.sid)
     emit("me", request.sid)
 
+
 @socketio.on("disconnect")
 def handle_disconnect():
     print("Socket Disconnected", request.sid)
     emit("callEnded", broadcast=True)
+
 
 @socketio.on("callUser")
 def handle_call_user(data):
@@ -71,7 +74,9 @@ def handle_call_user(data):
     signal_data = data["signalData"]
     from_user = data["from"]
     name = data["name"]
-    emit("callUser", {"signal": signal_data, "from": from_user, "name": name}, room=user_to_call)
+    emit("callUser", {"signal": signal_data,
+         "from": from_user, "name": name}, room=user_to_call)
+
 
 @socketio.on("answerCall")
 def handle_answer_call(data):
@@ -79,44 +84,55 @@ def handle_answer_call(data):
     signal = data["signal"]
     emit("callAccepted", signal, room=to_user)
 
+
 @app.route('/api/upload', methods=['POST'])
 # @cross_origin(origin='localhost', headers=['Content- Type','Authorization'])
 def upload_file():
-    print('Request Received')
+    # print('Request Received')
     try:
         image_data = request.json['body']
 
+        # print(image_data)
+
         image_bytes = base64.b64decode(image_data)
+
+        # print(image_bytes)
 
         client = storage.Client()
 
         bucket = client.get_bucket('animated-scope-418820.appspot.com')
-        file_name = "Image-" + datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d-%H-%M-%S')
-        blob = bucket.blob(file_name).upload_from_string(image_bytes, content_type='image/png', predefined_acl='publicRead')
+        file_name = "Image-" + \
+            datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d-%H-%M-%S')
+        blob = bucket.blob(file_name).upload_from_string(
+            image_bytes, content_type='image/png', predefined_acl='publicRead')
 
-        return True, bucket.blob(file_name).public_url
+        return jsonify(bucket.blob(file_name).public_url)
     except:
         logging.error("Error uploading data to GCS")
-        return False
-    
-@app.route('/api/model', methods=['GET'])
+        return jsonify("ERROR")
+
+
+@app.route('/api/model', methods=['GET', 'POST'])
 @cross_origin()
 def get_model_output():
     try:
-        client = storage.Client()
-        bucket = client.get_bucket('animated-scope-418820.appspot.com')
-        blobs = bucket.list_blobs()
-        sorted_blobs = sorted(blobs, key=lambda x: x.updated, reverse=True)
-        most_recent_blob = sorted_blobs[0]
+        # client = storage.Client()
+        # bucket = client.get_bucket('animated-scope-418820.appspot.com')
+        # blobs = bucket.list_blobs()
+        # sorted_blobs = sorted(blobs, key=lambda x: x.updated, reverse=True)
+        # most_recent_blob = sorted_blobs[0]
         model = init_vertex()
         start_time = time.time()
-        text = generate_text(model, most_recent_blob.public_url)
+        print(request.json['body'])
+        text = generate_text(model, request.json['body'])
+        print(text)
         end_time = time.time()
         duration = end_time - start_time
-        return {'answer': text, 'duration': duration}
+        print("Request Received")
+        return jsonify({'answer': text, 'duration': duration})
     except:
         logging.error("Error getting model output")
-        return False
+        return jsonify("ERROR")
 
 
 if __name__ == '__main__':

@@ -8,6 +8,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Peer from "simple-peer";
 import io from "socket.io-client";
+import axios from "axios";
 
 const socket = io.connect("http://localhost:5000");
 
@@ -74,20 +75,38 @@ function Call() {
         
         // Send the image to the server
         const imagedata = {
-            method: 'POST',
-            body: imageURL
+          body: imageURL
         };
-        
-        fetch('http://localhost:5000/api/upload', imagedata).then((response) => {
+
+        axios.post('http://localhost:5000/api/upload', imagedata).then((response) => {
+          console.log(response.data);
+          const url = {
+            body: response.data.replace('https://storage.googleapis.com', 'gs:/')
+          }
+          axios.post('http://localhost:5000/api/model', url). then((response) => {
             console.log(response.data);
+          }).catch((error) => {
+            console.log(error)
+          })
         }).catch((error) => {
-            console.log(error);
-        });
-        // axios.get('http://localhost:5000/api/model').then((response) => {
+          console.log(error);
+        })
+        // fetch('http://localhost:5000/api/upload', imagedata).then((response) => {
         //     console.log(response.data);
         // }).catch((error) => {
         //     console.log(error);
         // });
+
+        // axios.post('http://localhost:5000/api/model', url).then((response) => {
+        //   console.log(response.data);
+        // }).catch((error) => {
+        //   console.log(error);
+        // });
+        axios.get('http://localhost:5000/api/model').then((response) => {
+          console.log(response.data);
+        }).catch((error) => {
+          console.log(error);
+        })
       });
     }
   };
