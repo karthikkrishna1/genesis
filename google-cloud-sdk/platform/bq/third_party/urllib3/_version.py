@@ -1,5 +1,0 @@
-#!/usr/bin/env python
-# This file is protected via CODEOWNERS
-from __future__ import annotations
-
-__version__ = "2.0.7"
