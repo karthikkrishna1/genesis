@@ -68,7 +68,23 @@ function Call() {
         let imageURL = canvas
           .toDataURL("image/png")
           .replace(/^data:image\/(png|jpg);base64,/, "");
-        console.log(imageURL);
+        
+        // Send the image to the server
+        const imagedata = {
+            method: 'POST',
+            body: imageURL
+        };
+        
+        fetch('http://localhost:5000/api/upload', imagedata).then((response) => {
+            console.log(response.data);
+        }).catch((error) => {
+            console.log(error);
+        });
+        // axios.get('http://localhost:5000/api/model').then((response) => {
+        //     console.log(response.data);
+        // }).catch((error) => {
+        //     console.log(error);
+        // });
       });
     }
   };

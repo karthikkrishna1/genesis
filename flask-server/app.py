@@ -1,10 +1,17 @@
+import base64
 import os
 from flask import Flask, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
+from google.cloud import storage
+from base64 import b64decode
+from datetime import datetime
+import time
+import logging
+from model import init_vertex, generate_text
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins='*', methods=['GET', 'POST'], allow_headers=['Content-Type'])
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # email_to_sid_map = {}
@@ -71,6 +78,46 @@ def handle_answer_call(data):
     to_user = data["to"]
     signal = data["signal"]
     emit("callAccepted", signal, room=to_user)
+
+@app.route('/api/upload', methods=['POST'])
+# @cross_origin(origin='localhost', headers=['Content- Type','Authorization'])
+def upload_file():
+    print('Request Received')
+    try:
+        image_data = request.json['body']
+
+        image_bytes = base64.b64decode(image_data)
+
+        client = storage.Client()
+
+        bucket = client.get_bucket('animated-scope-418820.appspot.com')
+        file_name = "Image-" + datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d-%H-%M-%S')
+        blob = bucket.blob(file_name).upload_from_string(image_bytes, content_type='image/png', predefined_acl='publicRead')
+
+        return True, bucket.blob(file_name).public_url
+    except:
+        logging.error("Error uploading data to GCS")
+        return False
+    
+@app.route('/api/model', methods=['GET'])
+@cross_origin()
+def get_model_output():
+    try:
+        client = storage.Client()
+        bucket = client.get_bucket('animated-scope-418820.appspot.com')
+        blobs = bucket.list_blobs()
+        sorted_blobs = sorted(blobs, key=lambda x: x.updated, reverse=True)
+        most_recent_blob = sorted_blobs[0]
+        model = init_vertex()
+        start_time = time.time()
+        text = generate_text(model, most_recent_blob.public_url)
+        end_time = time.time()
+        duration = end_time - start_time
+        return {'answer': text, 'duration': duration}
+    except:
+        logging.error("Error getting model output")
+        return False
+
 
 if __name__ == '__main__':
     app.run(debug=True)
