@@ -150,6 +150,15 @@ code {
   background-color: #2bac47;
 }
 
+.homepage-content h1 {
+  font-size: 3rem; /* Adjust to your preference */
+  font-weight: 800; /* Extra boldness */
+  line-height: 1.2; /* Adjust based on your font */
+  margin-bottom: 1rem; /* Space below the title */
+  color: #fff; /* White text, adjust if needed for your design */
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5); /* Optional: adds shadow for better readability */
+}
+
 .homepage-content {
   position: relative;
   display: flex;

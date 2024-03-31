@@ -14,8 +14,10 @@ const Home = () => {
     return (
         <div class="homepage">
             <div class="homepage-content">
-                <h1>Deep Fake Detective</h1>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In gravida ornare imperdiet. Nam eget arcu id libero vulputate convallis.</p>
+                <h1><b>WOKE</b></h1>
+                <p>Harness the power of clarity in every conversation, ensuring your communications are authentically human.
+                <br></br><br></br>
+                <b>Secure conversations, authentic interactions</b> — experience the future of communication with Woke.</p>
             </div>
             <div class="homepage-form">
                 <a href="/call">
