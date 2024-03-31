@@ -101,7 +101,9 @@ function Call() {
               .post("http://localhost:5000/api/model", url)
               .then((response) => {
                 console.log(response.data);
-                setAlerts((state) => [...state, response.data]);
+                if (response.data.answer == ' yes') {
+                  setAlerts((state) => [...state, "It is likely that this is a DeepFake."]);
+                }
               })
               .catch((error) => {
                 console.log(error);
