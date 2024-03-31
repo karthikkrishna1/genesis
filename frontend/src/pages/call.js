@@ -11,6 +11,7 @@ import io from "socket.io-client";
 const socket = io.connect("http://localhost:5000");
 
 function Call() {
+  const intervalRef = useRef();
   const [me, setMe] = useState("");
   const [stream, setStream] = useState();
   const [receivingCall, setReceivingCall] = useState(false);
@@ -21,7 +22,7 @@ function Call() {
   const [callEnded, setCallEnded] = useState(false);
   const [name, setName] = useState("");
   const myVideo = useRef();
-  const userVideo = useRef(null);
+  const userVideo = useRef();
   const connectionRef = useRef();
 
   useEffect(() => {
@@ -43,7 +44,35 @@ function Call() {
       setName(data.name);
       setCallerSignal(data.signal);
     });
+    intervalRef.current = setInterval(captureAndSaveImage, 1000);
+    return () => {
+      // Cleanup interval on component unmount
+      clearInterval(intervalRef.current);
+    };
   }, []);
+
+  const captureAndSaveImage = () => {
+    console.log("trial");
+    console.log();
+    if (userVideo.current) {
+      console.log("hello");
+      const track = userVideo.current.srcObject.getVideoTracks()[0];
+      console.log(track);
+      const imageCapture = new ImageCapture(track);
+      console.log(imageCapture);
+      imageCapture.grabFrame().then((bitmap) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
+        let imageURL = canvas
+          .toDataURL("image/png")
+          .replace(/^data:image\/(png|jpg);base64,/, "");
+        console.log(imageURL);
+      });
+    }
+  };
 
   const callUser = (id) => {
     const peer = new Peer({
@@ -94,25 +123,58 @@ function Call() {
   };
 
   return (
-    <div style={{ padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', height: '100vh', backgroundColor: '#1c1c1e' }}>
-      <h1 style={{ color: "#fff" }}>Zoomish</h1>
-      <div className="video-container" style={{ position: 'relative', width: '100%', height: '80vh', maxWidth: '80vw', margin: 'auto' }}>
-        {callAccepted && !callEnded ? (
-          <video
-            playsInline
-            ref={userVideo}
-            autoPlay
-            style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '80vh', objectFit: 'contain', borderRadius: '8px' }}
+    <>
+      <h1 style={{ textAlign: "center", color: "#fff" }}>Zoomish</h1>
+      <div className="container">
+        <div className="video-container">
+          <div className="video">
+            {stream && (
+              <video
+                playsInline
+                muted
+                ref={myVideo}
+                autoPlay
+                style={{ width: "300px" }}
+              />
+            )}
+          </div>
+          <div className="video">
+            {callAccepted && !callEnded ? (
+              <video
+                playsInline
+                ref={userVideo}
+                autoPlay
+                style={{ width: "300px" }}
+              />
+            ) : null}
+          </div>
+        </div>
+        <div className="myId">
+          <h1 id="userId">{me}</h1>
+          <TextField
+            id="filled-basic"
+            label="Name"
+            variant="filled"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={{ marginBottom: "20px" }}
           />
-        ) : null}
+          <CopyToClipboard text={me} style={{ marginBottom: "2rem" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AssignmentIcon fontSize="large" />}
+            >
+              Copy ID
+            </Button>
+          </CopyToClipboard>
 
-        {stream && (
-          <video
-            playsInline
-            muted
-            ref={myVideo}
-            autoPlay
-            style={{ position: 'absolute', bottom: '20px', right: '20px', width: '150px', borderRadius: '8px' }}
+          <TextField
+            id="filled-basic"
+            label="ID to call"
+            variant="filled"
+            value={idToCall}
+            onChange={(e) => setIdToCall(e.target.value)}
           />
         )}
       </div>
