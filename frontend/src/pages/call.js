@@ -187,7 +187,7 @@ function Call() {
 
   return (
     <>
-      <Alert alerts={alerts} />
+      <Alert className="alerts" alerts={alerts} />
       <div className="video-call-container">
         {receivingCall && !callAccepted && (
           <div className="incoming-call">

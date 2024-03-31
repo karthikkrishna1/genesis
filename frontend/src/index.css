@@ -11,7 +11,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(116.52deg, #269272 12.58%, #174A4E 97.55%);
+  background: linear-gradient(116.52deg, #436841 12.58%, #192c18 97.55%);
   overflow: hidden;
 }
 
@@ -37,6 +37,14 @@ code {
   min-height: 100vh;
   max-height: 100vh; 
   width: 100vw; 
+}
+
+.alerts {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  color: rgb(255, 65, 27)
 }
 
 .animated-button {
@@ -355,7 +363,7 @@ button:hover .arrow:before {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(116.52deg, #269272 12.58%, #174A4E 97.55%);
+  background: linear-gradient(116.52deg, #436841 12.58%, #192c18 97.55%);
 }
 
 .main-video-area {
