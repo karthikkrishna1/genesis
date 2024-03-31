@@ -19,30 +19,41 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
 .homepage {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 0; /* Adjusted padding to ensure full coverage */
+  padding: 0; 
+  /* background: #192A2B;
+   */
+  
   background: linear-gradient(116.52deg, #269272 12.58%, #174A4E 97.55%);
+
+  background-image: url('https://images-ext-1.discordapp.net/external/RB7PwjK_q8rd6NHvlK752ZuYPW1fob1H3SUxc7wvAOw/https/4kwallpapers.com/images/walls/thumbs_3t/9238.png?format=webp&quality=lossless&width=1810&height=1018');
+  background-size: cover; /* Cover the entire page */
+  background-position: center; /* Center the background image */
   min-height: 100vh;
-  max-height: 100vh; /* Ensures it doesn't exceed the viewport height */
-  width: 100vw; /* Ensures full width */
+  max-height: 100vh; 
+  width: 100vw; 
 }
 
 .homepage-content {
   position: relative;
   display: flex;
-  margin: 0 5vw; 
-  padding: 2vw;
+  margin: 0 0vw; 
+  padding: 10vw;
   flex-direction: column;
   align-items: flex-start; 
-  text-align: left; /* Adjust if you want text centered within .homepage-content */
-  color: #269272;
+  text-align: left; 
+  color: #fbfbfb;
+  min-height: 30vh;
   width: 80%; 
-  justify-content: center; /* Centers the flex items vertically within the .homepage-content */
-  background-color: #f2f2f2;
+  justify-content: center; 
+  /* background-color: #f2f2f2; */
+  margin-right: 3;
+  margin-left: 0;
 }
 
 
@@ -50,35 +61,66 @@ code {
   font-size: 1.5rem;
   font-weight: 200;
   margin-bottom: 1rem;
-  color: #798481;
+  color: #d4e1de;
+
 }
 
 .homepage-form {
   
   position: relative;
-  display: flex; /* Change to flex to use justify-content and align-items */
-  flex-direction: column; /* Stack children vertically */
-  align-items: center; /* Center horizontally in case of wider form elements */
-  justify-content: center; /* Center vertically */
-  margin: auto; /* Center the form within the container */
-  padding: 2vw;
-  width: 50%; /* Adjusted from min-width to width for consistent sizing */
-  background: linear-gradient(116.52deg, #269272 12.58%, #174A4E 97.55%);
-  border-radius: 10px;
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+  margin: 0 2vw; 
+  margin-left: -8vw; /* Move the form slightly to the left */
+  
+  margin-right: 0vw; /* Move the form slightly to the let */
+  width:80%;
+  padding: 0vw;
+  min-width: 30vh;
+  width: 50%; 
+  background-color: rgba(0, 0, 0, 0.8);
+  min-height: 100vh;
+  min-width: 58vh;
+  color : white;
+
 }
+
+.title {
+    font-size: 35px; 
+    position: relative;
+    top: 5px; /* Adjust the value as needed */
+
+    color : white;
+  }
+
 .loginform {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
   color: white;
+  padding : 10px;
 }
+
+.logincontainer label {
+  display: block; 
+  margin-top: 10px; 
+  margin-bottom: 10px; 
+  color: white; 
+  font-size: 18px; 
+  font-weight: bold; 
+}
+
 
 .login-wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  position: relative;
+  top: -10px;
 }
 
 .logincontainer {
@@ -86,15 +128,23 @@ code {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  
 }
 
 .logincontainer input {
   width: 100%;
+  
 }
+
+.forgot-password {
+  margin-top: 90px; 
+}
+
 
 .button-container {
   display: flex;
   flex-direction: row;
+  position: relative;
 }
 
 .button {
@@ -102,7 +152,7 @@ code {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  --primary-color: #fff;
+  --primary-color: white;
   --secondary-color: #269272;
   --hover-color: #111;
   --arrow-width: 10px;
@@ -120,6 +170,8 @@ code {
   align-items: center;
   gap: 0.6em;
   font-weight: bold;
+  position: relative;
+  top: 10px;
 }
 
 button .arrow-wrapper {
@@ -168,7 +220,7 @@ button:hover .arrow:before {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  color: white;
+  color: black;
 }
 
 .signup-wrapper {
@@ -188,10 +240,11 @@ button:hover .arrow:before {
 
 .title {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 800;
   margin-bottom: 1rem;
   color: white;
 }
+
 
 
 .video-call-container {
