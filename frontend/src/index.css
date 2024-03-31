@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f2f2f2;
 }
 
 code {
@@ -172,4 +173,44 @@ button:hover .arrow:before {
   font-weight: 700;
   margin-bottom: 1rem;
   color: white;
+}
+
+.container, .video-container, .myId, .caller {
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.video {
+  margin: 10px auto;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.Button, .IconButton, .TextField {
+  margin: 10px;
+  border-radius: 20px;
+}
+
+.Button {
+  background-color: #007bff;
+  color: white;
+}
+
+.TextField {
+  background-color: white;
+  border: none;
+}
+
+/* Update specific MUI components via global classes if needed */
+.MuiButton-containedPrimary {
+  background-color: #007bff;
+}
+
+.MuiButton-containedSecondary {
+  background-color: #dc3545; /* Bootstrap danger color for the end call button */
+}
+
+.MuiTextField-root {
+  background-color: white; /* Ensures text fields are clearly visible */
 }
